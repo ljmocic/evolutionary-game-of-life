@@ -61,24 +61,24 @@ function Organism() {
 
     this.render = function() {
 
-        // body
+        var theta = this.velocity.heading() + PI / 2;
+        push();
+        // act like it is in the left upper corner
+        translate(this.position.x, this.position.y);
+        rotate(theta);
+
+        // draw an organism
         fill(this.colorR, this.colorG, this.colorB);
-        ellipse(this.position.x, this.position.y, this.radius);
+        stroke(this.colorG);
+        beginShape(this.colorB);
+        ellipse(0, 0, this.radius);
 
-        // sight
+        // draw sensor
         fill(255, 255, 255, 30);
-        //console.log(this.desiredPosition);
-
-        var angle = this.velocity.angleBetween(this.desiredPosition);
-
-        document.getElementById("debug").innerHTML = angle;
-
-        arc(this.position.x, 
-                this.position.y, 
-                this.sight, 
-                this.sight, 
-                angle - HALF_PI / 2,
-                angle + HALF_PI / 2);
+        stroke(0, 255, 0);
+        arc(0, 0, this.sight, this.sight,  PI + PI / 4, PI + 3 * PI / 4);
+        endShape(CLOSE);
+        pop();
         
     };
 
