@@ -1,8 +1,8 @@
 var population;
-var populationSize = 10;
+var populationSize = 50;
 
 var food;
-var numberOfFood = 100;
+var numberOfFood = 300;
 
 var maxFitness = 0;
 
@@ -131,7 +131,7 @@ function Organism() {
 
         }
 
-        if(minDistance < this.sight - 30 ) {
+        if(minDistance < this.sight) {
             goal = food[minIndex];
 
             // want to eat food so bad
