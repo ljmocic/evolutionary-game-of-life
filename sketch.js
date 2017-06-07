@@ -1,19 +1,25 @@
-var organisms;
+var population;
+var populationSize = 10;
 
-var maxSpeed = 1;
-var maxForce = 0.5;
+var food;
+var numberOfFood = 100;
 
 var mouse;
 
 function setup() {
-    createCanvas(700, 500);
+    createCanvas(800, 600);
     frameRate(30);
     background(128);
 
-    organisms = new Array();
+    population = new Array();
+    food = new Array();
 
-    for(var i = 0; i < 50; i++) {
-        organisms.push(new Organism());
+    for(var i = 0; i < populationSize; i++) {
+        population.push(new Organism());
+    }
+
+    for(var i = 0; i < numberOfFood; i++) {
+        food.push(createVector(random(width), random(height)));
     }
 }
 
@@ -24,39 +30,135 @@ function draw() {
     // update organisms
     clear();
     background(128);
-    for(var i = 0; i < organisms.length; i++) {
-        organisms[i].update();
+    for(var i = 0; i < population.length; i++) {
+        population[i].update();
     }
+
+    for(var i = 0; i < food.length; i++) {
+        fill(0, 255, 0);
+        noStroke();
+        ellipse(food[i].x, food[i].y, 5);
+    }
+
 }
 
 function Organism() {
 
     // position
     this.position = createVector(random(width), random(height));
-    this.velocity = createVector(0, 0);
+    this.velocity = createVector(random(this.maxSpeed), random(this.maxSpeed));
     this.acceleration = createVector(0, 0);
     this.desiredPosition = createVector(random(width), random(height));
+    this.maxForce = random(0.5);
+    this.maxSpeed = random(3);
 
     // body
     this.radius = 10;
-    this.sight = 50;
+    this.sight = 70;
 
     // color
     this.colorR = random(255);
     this.colorG = random(255);
     this.colorB = random(255);
 
+    this.seek = function() {
+
+        //var goal = mouse; // if you want to follow mouse
+        // document.getElementById("debug").innerHTML = random(50) - 25;
+
+        var minDistance = Infinity;
+        var minIndex = -1;
+
+        var goal;
+        var desire;
+        var target;
+
+        // if it sees food, it should follow it
+        for(var i = 0; i < food.length; i++) {
+
+            var distance = int(dist(this.position.x, this.position.y, food[i].x, food[i].y));
+
+            if(distance < minDistance) {
+                minDistance = distance;
+                minIndex = i;
+            }
+
+        }
+
+        if(minDistance < this.sight - 10 ) {
+            goal = food[minIndex];
+
+            // want to eat food so bad
+            desire = 1;
+
+            target = p5.Vector.sub(goal, this.position);
+        
+            // normalize then multiply by maximum speed
+            target.setMag(this.maxSpeed * desire);
+
+            // make it closer to the target
+            this.desiredPosition = p5.Vector.sub(target, this.velocity);
+            this.desiredPosition.limit(this.maxForce);
+
+            // move towards target, as fast as you can
+            this.acceleration.add(this.desiredPosition);
+        }
+        // randomize moving
+        else if(frameCount % floor(random(30)) == 0) {
+            var randomMovement = 1;
+            var randX = this.velocity.x + random(randomMovement) - randomMovement / 2;
+            var randY = this.velocity.y + random(randomMovement) - randomMovement / 2;
+            this.acceleration = createVector(randX, randY);
+        }
+    };
+
     this.move = function() {
         
         // update position
         this.velocity.add(this.acceleration); // add force if there is any
         this.acceleration.mult(0); // reset acceleration
-        this.velocity.limit(maxSpeed);
+        this.velocity.limit(this.maxSpeed);
         this.position.add(this.velocity);
 
-        // limit boundaries
-        this.position.x = constrain(this.position.x, 0, width - 1);
-        this.position.y = constrain(this.position.y, 0, height - 1);
+        // let wall be a portal to the other side
+        if(this.position.x < 5) {
+            this.position.x = width - 5;
+        }
+        if(width - this.position.x < 5) {
+            this.position.x = 5;
+        }
+        if(this.position.y < 5) {
+            this.position.y = height - 5;
+        }
+        if(height - this.position.y < 5) {
+            this.position.y = 5;
+        }
+
+        // limit boundaries classic way
+        // this.position.x = constrain(this.position.x, 0, width - 1);
+        // this.position.y = constrain(this.position.y, 0, height - 1);
+    };
+
+    this.eat = function() {
+
+        var minDistance = Infinity;
+        var minIndex = -1;
+
+        for(var i = 0; i < food.length; i++) {
+
+            var distance = int(dist(this.position.x, this.position.y, food[i].x, food[i].y));
+
+            if(distance < minDistance) {
+                minDistance = distance;
+                minIndex = i;
+            }
+
+        }
+
+        if(minDistance < 5 ) {
+            food.splice(minIndex, 1);
+        }
+        
     };
 
     this.render = function() {
@@ -82,24 +184,9 @@ function Organism() {
         
     };
 
-    this.seek = function(goal) {
-
-        // where should organism go
-        var target = p5.Vector.sub(goal, this.position);
-        
-        // normalize then multiply by maximum speed
-        target.setMag(maxSpeed);
-
-        // make it closer to the target
-        desiredPosition = p5.Vector.sub(target, this.velocity);
-        desiredPosition.limit(maxForce);
-
-        // move towards target, as fast as you can
-        this.acceleration.add(desiredPosition);
-    };
-
     this.update = function() {
-        this.seek(mouse);
+        this.eat();
+        this.seek();
         this.move();
         this.render();
     };
