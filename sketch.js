@@ -4,6 +4,8 @@ var populationSize = 10;
 var food;
 var numberOfFood = 100;
 
+var maxFitness = 0;
+
 var mouse;
 
 function setup() {
@@ -30,16 +32,21 @@ function draw() {
     // update organisms
     clear();
     background(128);
-    for(var i = 0; i < population.length; i++) {
+    for(var i = population.length - 1; i >= 0; i--) {
         population[i].update();
+        if(population[i].health <= 0) {
+            population.splice(i, 1);
+        }
     }
 
+    // draw food
     for(var i = 0; i < food.length; i++) {
         fill(0, 255, 0);
         noStroke();
         ellipse(food[i].x, food[i].y, 5);
     }
 
+    document.getElementById("debug").innerHTML = "Max fitness: " + maxFitness;
 }
 
 function Organism() {
@@ -49,17 +56,56 @@ function Organism() {
     this.velocity = createVector(random(this.maxSpeed), random(this.maxSpeed));
     this.acceleration = createVector(0, 0);
     this.desiredPosition = createVector(random(width), random(height));
-    this.maxForce = random(0.5);
-    this.maxSpeed = random(3);
+    this.maxForce = random(1);
+    this.maxSpeed = random(10);
+
+    // health
+    this.health = 100;
 
     // body
     this.radius = 10;
-    this.sight = 70;
+    this.sight = random(30, 70);
 
     // color
     this.colorR = random(255);
     this.colorG = random(255);
     this.colorB = random(255);
+
+    this.fitness = function() {
+        var score = 0;
+
+        score += Math.abs(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
+        score += this.maxForce;
+        score += this.maxSpeed;
+        score += this.health;
+
+        if(score > maxFitness) {
+            maxFitness = score;
+        }
+    };
+
+    this.eat = function() {
+
+        var minDistance = Infinity;
+        var minIndex = -1;
+
+        for(var i = 0; i < food.length; i++) {
+
+            var distance = int(dist(this.position.x, this.position.y, food[i].x, food[i].y));
+
+            if(distance < minDistance) {
+                minDistance = distance;
+                minIndex = i;
+            }
+
+        }
+
+        if(minDistance < 5 ) {
+            food.splice(minIndex, 1);
+            this.health += 50;
+        }
+        
+    };
 
     this.seek = function() {
 
@@ -85,7 +131,7 @@ function Organism() {
 
         }
 
-        if(minDistance < this.sight - 10 ) {
+        if(minDistance < this.sight - 30 ) {
             goal = food[minIndex];
 
             // want to eat food so bad
@@ -105,7 +151,7 @@ function Organism() {
         }
         // randomize moving
         else if(frameCount % floor(random(30)) == 0) {
-            var randomMovement = 1;
+            var randomMovement = 7;
             var randX = this.velocity.x + random(randomMovement) - randomMovement / 2;
             var randY = this.velocity.y + random(randomMovement) - randomMovement / 2;
             this.acceleration = createVector(randX, randY);
@@ -139,28 +185,6 @@ function Organism() {
         // this.position.y = constrain(this.position.y, 0, height - 1);
     };
 
-    this.eat = function() {
-
-        var minDistance = Infinity;
-        var minIndex = -1;
-
-        for(var i = 0; i < food.length; i++) {
-
-            var distance = int(dist(this.position.x, this.position.y, food[i].x, food[i].y));
-
-            if(distance < minDistance) {
-                minDistance = distance;
-                minIndex = i;
-            }
-
-        }
-
-        if(minDistance < 5 ) {
-            food.splice(minIndex, 1);
-        }
-        
-    };
-
     this.render = function() {
 
         var theta = this.velocity.heading() + PI / 2;
@@ -185,9 +209,11 @@ function Organism() {
     };
 
     this.update = function() {
+        this.fitness();
         this.eat();
         this.seek();
         this.move();
         this.render();
+        this.health -= 1;
     };
 }
