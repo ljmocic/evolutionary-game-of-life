@@ -16,27 +16,27 @@
     <table>
 
       <tr>
-        <td><span>Random food generation:</span></td>
-        <td><span id="randomFoodGenerationOutput"></span></td>
-        <td><input type="range" id="randomFoodGeneration" value="5"></td>
+        <td><span>Population size:</span></td>
+        <td><span id="populationSizeOutput"></span></td>
+        <td><input type="range" id="populationSize" min="10" max="50" value="30" ></td>
       </tr>
 
       <tr>
-        <td><span>Population size:</span></td>
-        <td><span id="populationSizeOutput"></span></td>
-        <td><input type="range" id="populationSize" value="30"></td>
+        <td><span>Random food generation:</span></td>
+        <td><span id="randomFoodGenerationOutput"></span></td>
+        <td><input type="range" min="0" max="10"  id="randomFoodGeneration" value="3"></td>
       </tr>
 
       <tr>
         <td><span>Elitism:</span></td>
         <td><span id="elitismOutput"></span></td>
-        <td><input type="range" id="elitism" value="10"></td>
+        <td><input type="range" id="elitism" min="0" max="30"  value="5"></td>
       </tr>
 
       <tr>
         <td><span>Mutation rate:</span></td>
         <td><span id="mutationRateOutput"></span></td>
-        <td><input type="range" id="mutationRate" value="30"></td>
+        <td><input type="range" id="mutationRate" min="0" max="100"  value="30"></td>
       </tr>
 
       <tr>

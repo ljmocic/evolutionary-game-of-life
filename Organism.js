@@ -3,10 +3,10 @@ function Organism() {
     this.fitness = 0;
 
     // position
-    this.position = createVector(random(width), random(height));
+    this.position = createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10);
     this.velocity = createVector(random(this.maxSpeed), random(this.maxSpeed));
     this.acceleration = createVector(0, 0);
-    this.desiredPosition = createVector(random(width), random(height));
+    this.desiredPosition = createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10);
     this.maxForce = random(1);
     this.maxSpeed = random(10);
 
@@ -45,10 +45,10 @@ function Organism() {
 
         if (randomNumber < 1) {
             if (random(1) < 0.5) {
-                this.position.add(this.position * random(1));
+                this.sight = this.sight * 1.3;
             }
             else {
-                this.position.add(this.position * random(1) * (-1));
+                this.sight = this.sight * 0.7;
             }
         }
         else if (randomNumber < 2) {
