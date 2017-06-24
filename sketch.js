@@ -193,6 +193,7 @@ function refreshParameters() {
 
 
     mutationRate = document.getElementById("mutationRate").value * 0.01;
-    document.getElementById("mutationRateOutput").innerHTML = mutationRate.toFixed(2);;
+    document.getElementById("mutationRateOutput").innerHTML = mutationRate.toFixed(2);
 
+    deathEnabled = document.getElementById("deathCheckbox").checked;
 }

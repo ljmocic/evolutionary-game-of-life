@@ -25,11 +25,11 @@ function Organism() {
     this.calculateFitness = function () {
         var score = 0;
 
-        //score += Math.abs(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
+        score += Math.abs(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
         score += this.maxForce;
         score += this.maxSpeed;
         
-        score += this.radius;
+        //score += this.radius;
         score += this.sight;
 
         if (score > maxFitness) {
@@ -208,6 +208,6 @@ function Organism() {
         this.seek();
         this.move();
         this.render();
-        this.health -= 10;
+        this.health -= 3;
     };
 }
