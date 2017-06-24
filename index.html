@@ -1,9 +1,51 @@
 <html>
-  <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.min.js"></script>
-    <script src="sketch.js"></script>
-  </head>
-  <body>
-    <div id="debug"></div>
-  </body>
+
+<head>
+  <script src="p5.min.js"></script>
+  <!--Needed for image manipulation-->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script>-->
+  <script src="sketch.js"></script>
+  <script src="Organism.js"></script>
+
+</head>
+
+<body>
+  <div id="controls" style="float: right;">
+    <div id="fitness"></div>
+    <div id="population"></div>
+    <table>
+
+      <tr>
+        <td><span>Random food generation:</span></td>
+        <td><span id="randomFoodGenerationOutput"></span></td>
+        <td><input type="range" id="randomFoodGeneration" value="5"></td>
+      </tr>
+
+      <tr>
+        <td><span>Population size:</span></td>
+        <td><span id="populationSizeOutput"></span></td>
+        <td><input type="range" id="populationSize" value="30"></td>
+      </tr>
+
+      <tr>
+        <td><span>Elitism:</span></td>
+        <td><span id="elitismOutput"></span></td>
+        <td><input type="range" id="elitism" value="10"></td>
+      </tr>
+
+      <tr>
+        <td><span>Mutation rate:</span></td>
+        <td><span id="mutationRateOutput"></span></td>
+        <td><input type="range" id="mutationRate" value="30"></td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td><button onclick="resetSimulation()">Reset simulation</button></td>
+        <td></td>
+      </tr>
+  </div>
+  </div>
+</body>
+
 </html>
