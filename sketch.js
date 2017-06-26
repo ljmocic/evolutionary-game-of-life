@@ -1,15 +1,18 @@
 var population = new Array();
 var food = new Array();
+var water = new Array();
 
 var elitism = 5;
 
 var generation = 0;
 var populationSize = 30;
 var mutationRate = 0.9;
-var numberOfFood = 300;
+var numberOfFood = 200;
+var numberOfWater = 50;
 var maxFitness = 0;
 
-var randomFoodGeneration = 30;
+var randomFoodGeneration = 15;
+var randomWaterGeneration = 3;
 
 var deathEnabled = false;
 
@@ -40,6 +43,12 @@ function setup() {
     for (var i = 0; i < numberOfFood; i++) {
         food.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
     }
+
+    /*
+    for (var i = 0; i < numberOfWater; i++) {
+        water.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
+    }
+    */
 }
 
 function draw() {
@@ -78,12 +87,28 @@ function draw() {
         }
     }
 
+    /*
+    if (random(1) < 0.3) {
+        for (var i = 0; i < randomWaterGeneration; i++) {
+            water.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
+        }
+    }
+    */
+
     // draw food
     for (var i = 0; i < food.length; i++) {
         fill(0, 255, 0);
         noStroke();
         ellipse(food[i].x, food[i].y, 5);
     }
+
+    /*
+    for (var i = 0; i < water.length; i++) {
+        fill(0, 191, 255);
+        noStroke();
+        ellipse(water[i].x, water[i].y, 5);
+    }
+    */
 
     refreshParameters();
 }

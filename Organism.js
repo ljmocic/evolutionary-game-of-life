@@ -25,12 +25,13 @@ function Organism() {
     this.calculateFitness = function () {
         var score = 0;
 
-        score += Math.abs(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
-        score += this.maxForce;
-        score += this.maxSpeed;
+        //score += Math.abs(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
+        //score += this.maxForce;
+        //score += this.maxSpeed;
+        score += this.health;
         
         //score += this.radius;
-        score += this.sight;
+        //score += this.sight;
 
         if (score > maxFitness) {
             maxFitness = score;
@@ -45,34 +46,34 @@ function Organism() {
 
         if (randomNumber < 1) {
             if (random(1) < 0.5) {
-                this.sight = this.sight * 1.3;
+                this.sight = this.sight * (random(1) + 1);
             }
             else {
-                this.sight = this.sight * 0.7;
+                this.sight = this.sight * random(1);
             }
         }
         else if (randomNumber < 2) {
             if (random(1) < 0.5) {
-                this.radius = this.radius * 1.3;
+                this.radius = this.radius * (random(1) + 1);
             }
             else {
-                this.radius = this.radius * 0.7;
+                this.radius = this.radius * random(1);
             }
         }
         else if (randomNumber < 4) {
             if (random(1) < 0.5) {
-                this.maxForce = this.maxForce * 1.3;
+                this.maxForce = this.maxForce * (random(1) + 1);
             }
             else {
-                this.maxForce = this.maxForce * 0.7;
+                this.maxForce = this.maxForce * random(1);
             }
         }
         else if (randomNumber < 5) {
             if (random(1) < 0.5) {
-                this.maxSpeed = this.maxSpeed * 1.3;
+                this.maxSpeed = this.maxSpeed * (random(1) + 1);
             }
             else {
-                this.maxSpeed = this.maxSpeed * 0.7;
+                this.maxSpeed = this.maxSpeed * random(1);
             }
         }
 
