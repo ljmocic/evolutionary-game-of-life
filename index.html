@@ -1,11 +1,12 @@
 <html>
 
 <head>
-  <script src="p5.min.js"></script>
+  <script src="lib/p5.min.js"></script>
   <!--Needed for image manipulation-->
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script>-->
   <script src="sketch.js"></script>
-  <script src="Organism.js"></script>
+  <script src="model/Organism.js"></script>
+  <script src="model/Obstacle.js"></script>
 
 </head>
 
@@ -18,7 +19,7 @@
       <tr>
         <td><span>Population size:</span></td>
         <td><span id="populationSizeOutput"></span></td>
-        <td><input type="range" id="populationSize" min="10" max="50" value="30" ></td>
+        <td><input type="range" id="populationSize" min="10" max="50" value="50" ></td>
       </tr>
 
       <tr>
@@ -40,7 +41,7 @@
       </tr>
 
       <tr>
-        <td><input type="checkbox" id="deathCheckbox" checked >Death enabled</td>
+        <td><input type="checkbox" id="deathCheckbox">Death enabled</td>
         <td><button onclick="resetSimulation()">Reset simulation</button></td>
         <td></td>
       </tr>

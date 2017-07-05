@@ -1,6 +1,8 @@
 var population = new Array();
 var food = new Array();
 var water = new Array();
+var poison = new Array();
+var obstacles = new Array();
 
 var elitism = 5;
 
@@ -9,14 +11,18 @@ var populationSize = 30;
 var mutationRate = 0.9;
 var numberOfFood = 200;
 var numberOfWater = 50;
+var numberOfPoison = 30;
+var numberOfObstacles = 30;
 var maxFitness = 0;
 
 var randomFoodGeneration = 15;
 var randomWaterGeneration = 3;
+var randomPoisonGeneration = 3;
 
 var deathEnabled = false;
 
-var mouse;
+var frameWidth = 883;
+var frameHeight = 550;
 
 // start server
 // command: python -m http.server
@@ -25,17 +31,41 @@ var mouse;
 var bg;
 
 function preload() {
-    bg = loadImage("map.jpg"); 
+    bg = loadImage("model/bg1.jpg"); 
 }
 */
-
-var frameWidth = 883;
-var frameHeight = 550;
 
 function setup() {
     createCanvas(frameWidth, frameHeight);
     frameRate(30);
 
+    initElements();
+}
+
+function draw() {
+
+    // every 5 seconds generating new population
+    if (frameCount % 150 == 0) {
+        runGeneticAlgoritm();
+    }
+
+    // remove all elements from last frame
+    clear();
+
+    // in case of server running, enable background
+    //background(bg); 
+    background(50);
+
+    removeDead();
+    
+    generateElements();
+
+    drawElements();
+    
+    refreshParameters();
+}
+
+function initElements() {
     for (var i = 0; i < populationSize; i++) {
         population.push(new Organism());
     }
@@ -44,31 +74,77 @@ function setup() {
         food.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
     }
 
-    /*
     for (var i = 0; i < numberOfWater; i++) {
         water.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
     }
-    */
+
+    for (var i = 0; i < numberOfPoison; i++) {
+        poison.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
+    }
+    
+    
+    for (var i = 0; i < numberOfObstacles; i++) {
+        obstacles.push(new Obstacle(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10), random(30) + 10, random(30) + 10));
+    }
+    
 }
 
-function draw() {
-
-    // every 10 seconds
-    if (frameCount % 150 == 0) {
-        runGeneticAlgoritm();
+function drawElements() {
+    // draw food
+    for (var i = 0; i < food.length; i++) {
+        fill(0, 255, 0);
+        noStroke();
+        ellipse(food[i].x, food[i].y, 5);
     }
 
-    // update mouse position
-    mouse = createVector(mouseX, mouseY);
+    // water
+    for (var i = 0; i < water.length; i++) {
+        fill(0, 191, 255);
+        noStroke();
+        ellipse(water[i].x, water[i].y, 5);
+    }
 
-    // update organisms
-    clear();
+    // poison
+    for (var i = 0; i < poison.length; i++) {
+        fill(255, 0, 0);
+        noStroke();
+        ellipse(poison[i].x, poison[i].y, 5);
+    }
 
-    // for later image manipulation
-    //background(bg);
-    background(50);
+    // obstacles
+    for (var i = 0; i < obstacles.length; i++) {
+        obstacles[i].draw();
+    }
+}
 
+function generateElements() {
+    // random food generation
+    if (random(1) < 0.3) {
+        for (var i = 0; i < randomFoodGeneration; i++) {
+            food.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
+        }
+    }
 
+    // random water generation
+    if (random(1) < 0.3) {
+        for (var i = 0; i < randomFoodGeneration; i++) {
+            if(random(1) < 0.1) {
+                water.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
+            }
+        }
+    }
+
+    // random poison generation
+    if (random(1) < 0.3) {
+        for (var i = 0; i < randomPoisonGeneration; i++) {
+            if(random(1) < 0.1) {
+                poison.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
+            }
+        }
+    }
+}
+
+function removeDead() {
     for (var i = population.length - 1; i > 0; i--) {
         population[i].update();
 
@@ -79,42 +155,15 @@ function draw() {
             }
         }
     }
-
-    // random food generation
-    if (random(1) < 0.3) {
-        for (var i = 0; i < randomFoodGeneration; i++) {
-            food.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
-        }
-    }
-
-    /*
-    if (random(1) < 0.3) {
-        for (var i = 0; i < randomWaterGeneration; i++) {
-            water.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
-        }
-    }
-    */
-
-    // draw food
-    for (var i = 0; i < food.length; i++) {
-        fill(0, 255, 0);
-        noStroke();
-        ellipse(food[i].x, food[i].y, 5);
-    }
-
-    /*
-    for (var i = 0; i < water.length; i++) {
-        fill(0, 191, 255);
-        noStroke();
-        ellipse(water[i].x, water[i].y, 5);
-    }
-    */
-
-    refreshParameters();
 }
 
 function runGeneticAlgoritm() {
     var bestInPopulation = new Array();
+
+    if(population.length < 10) {
+        alert("Population too small! Please reset simulation");
+        return;
+    }
 
     // elitism     
     for (var i = 0; i < elitism; i++) {
@@ -180,6 +229,10 @@ function runGeneticAlgoritm() {
         // mutation
         child.randomMutation();
 
+        if(child.radius > child.sight) {
+            child.sight = child.radius + 5;
+        }
+
         newPopulation.push(child);
     }
 
@@ -193,17 +246,16 @@ function runGeneticAlgoritm() {
 function resetSimulation() {
     population = new Array();
     food = new Array();
+    water = new Array();
+    poison = new Array();
+    obstacles = new Array();
 
-    for (var i = 0; i < populationSize; i++) {
-        population.push(new Organism());
-    }
-
-    for (var i = 0; i < numberOfFood; i++) {
-        food.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
-    }
+    initElements();
 }
 
 function refreshParameters() {
+
+    // update info
     document.getElementById("fitness").innerHTML = "Max fitness: " + maxFitness;
     document.getElementById("population").innerHTML = "Generation: " + generation;
 
