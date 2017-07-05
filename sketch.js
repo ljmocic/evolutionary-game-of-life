@@ -82,10 +82,11 @@ function initElements() {
         poison.push(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10));
     }
     
-    
+    /*
     for (var i = 0; i < numberOfObstacles; i++) {
         obstacles.push(new Obstacle(createVector(random(frameWidth - 20) + 10, random(frameHeight - 20) + 10), random(30) + 10, random(30) + 10));
     }
+    */
     
 }
 
