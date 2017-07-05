@@ -28,10 +28,10 @@ function Organism() {
         score += this.health;
 
         //score += Math.abs(Math.pow(this.velocity.x, 2) + Math.pow(this.velocity.y, 2));
-        //score += this.maxForce;
-        //score += this.maxSpeed;
-        //score += this.radius;
-        //score += this.sight;
+        score += this.maxForce;
+        score += this.maxSpeed;
+        score += this.radius;
+        score += this.sight;
 
         if (score > maxFitness) {
             maxFitness = score;
@@ -145,9 +145,6 @@ function Organism() {
 
     this.seek = function () {
 
-        //var goal = mouse; // if you want to follow mouse
-        // document.getElementById("debug").innerHTML = random(50) - 25;
-
         var minDistance = Infinity;
         var minIndex = -1;
 
@@ -258,5 +255,8 @@ function Organism() {
         this.move();
         this.render();
         this.health -= 1;
+        if(this.health > 100) {
+            this.health = 100;
+        }
     };
 }
