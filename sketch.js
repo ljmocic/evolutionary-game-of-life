@@ -46,7 +46,7 @@ function draw() {
 
     // every 5 seconds generating new population
     if (frameCount % 150 == 0) {
-        runGeneticAlgoritm();
+        runGeneticAlgorithm();
     }
 
     // remove all elements from last frame
@@ -158,7 +158,7 @@ function removeDead() {
     }
 }
 
-function runGeneticAlgoritm() {
+function runGeneticAlgorithm() {
     var bestInPopulation = new Array();
 
     if(population.length < 10) {
