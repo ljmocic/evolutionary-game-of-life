@@ -166,7 +166,11 @@ function runGeneticAlgorithm() {
         return;
     }
 
-    // elitism     
+    // elitism
+    var tempElitism = 0;
+    if(elitism > population.length) {
+        elitism = population.length;
+    }
     for (var i = 0; i < elitism; i++) {
 
         var maxPopulationFitness = 0;
