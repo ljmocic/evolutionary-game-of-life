@@ -192,7 +192,7 @@ function runGeneticAlgorithm() {
     }
 
     var newPopulation = new Array();
-    for (var j = 0; j < elitism; j++) {
+    for (var j = 0; j < tempElitism; j++) {
         newPopulation.push(bestInPopulation[j]);
     }
 
