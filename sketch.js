@@ -171,6 +171,9 @@ function runGeneticAlgorithm() {
     if(elitism > population.length) {
         tempElitism = population.length;
     }
+    else {
+        tempElitism = elitism;
+    }
     for (var i = 0; i < tempElitism; i++) {
 
         var maxPopulationFitness = 0;
